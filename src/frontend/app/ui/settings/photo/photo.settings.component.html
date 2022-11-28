@@ -1,0 +1,73 @@
+<form #settingsForm="ngForm" class="form-horizontal">
+  <div class="card mb-4">
+    <h5 class="card-header">
+      <span class="oi oi-{{icon}}"></span> {{Name}}
+    </h5>
+    <div class="card-body">
+      <div [hidden]="!error" class="alert alert-danger" role="alert"><strong>Error: </strong>{{error}}</div>
+
+      <p class="title" i18n>Photo converting:</p>
+
+      <app-settings-entry
+        name="Converting"
+        description="Downsizes photos for faster preview loading. (Zooming in to the photo loads the original)."
+        i18n-description i18n-name
+        [ngModel]="states.client.Converting.enabled">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="On the fly converting"
+        description="Converts photos on the fly, when they are requested."
+        i18n-description i18n-name
+        [ngModel]="states.server.Converting.onTheFly"
+        [simplifiedMode]="simplifiedMode"
+        [disabled]="!states.client.Converting.enabled.value">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Resolution"
+        description="The shorter edge of the converted photo will be scaled down to this, while keeping the aspect ratio."
+        i18n-description i18n-name
+        [ngModel]="states.server.Converting.resolution"
+        [options]="resolutions"
+        [disabled]="!states.client.Converting.enabled.value"
+        [required]="true">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Load full resolution image on zoom"
+        description="Enables loading the full resolution image on zoom in the ligthbox (preview)."
+        i18n-description i18n-name
+        [ngModel]="states.client.loadFullImageOnZoom"
+        [simplifiedMode]="simplifiedMode"
+        [disabled]="!states.client.Converting.enabled.value">
+      </app-settings-entry>
+
+
+      <button class="btn btn-success float-end"
+              [disabled]="!settingsForm.form.valid || !changed || inProgress"
+              (click)="save()" i18n>Save
+      </button>
+      <button class="btn btn-secondary float-end"
+              [disabled]=" !changed || inProgress"
+              (click)="reset()" i18n>Reset
+      </button>
+
+      <div [hidden]="!states.client.Converting.enabled.value">
+        <app-settings-job-button class="mt-2 mt-md-0 float-left"
+                                 [soloRun]="true"
+                                 (jobError)="error=$event"
+                                 [allowParallelRun]="false"
+                                 [jobName]="jobName"></app-settings-job-button>
+
+        <ng-container *ngIf="Progress != null">
+          <br/>
+          <hr/>
+          <app-settings-job-progress [progress]="Progress"></app-settings-job-progress>
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+
+</form>

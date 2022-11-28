@@ -1,0 +1,43 @@
+version: '3'
+services:
+  pigallery-db:
+    container_name: pigallery-db
+    image: mariadb
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=putsomethinginherethatyouwouldlikeasthepassword
+      - MYSQL_USER=pigallery2
+      - MYSQL_PASSWORD=pigallery2_pass
+      - MYSQL_DATABASE=pigallery2
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/error.log:/etc/nginx/error_log.log
+      - ./nginx/cache/:/etc/nginx/cache
+      - /etc/letsencrypt/:/etc/letsencrypt/
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+
+  pigallery2:
+    image: bpatrik/pigallery2:latest
+    command: sh -c 'bin/wait-for pigallery-db:3306 -- --Server-Database-mysql-host=pigallery-db --Server-Database-mysql-username=pigallery2 --Server-Database-mysql-password=pigallery2_pass --Server-Database-mysql-database=pigallery2'
+    container_name: pigallery2
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - "./pigallery2/config:/app/data/config" # CHANGE ME
+      - "db-data:/app/data/db"
+      - "./pigallery2/images:/app/data/images:ro" # CHANGE ME, ':ro' mean read-only
+      - "./pigallery2/tmp:/app/data/tmp" # CHANGE ME
+    expose:
+      - "80"
+    restart: always
+
+volumes:
+  db-data:

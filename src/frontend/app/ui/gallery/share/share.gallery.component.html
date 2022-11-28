@@ -1,0 +1,116 @@
+<button id="shareButton" class="nav-link btn  btn-link"
+        style="white-space:nowrap"
+        type="button" [disabled]="!enabled" (click)="openModal(shareModal)">
+  <span class="oi oi-share"></span>
+  <ng-container i18n>Share</ng-container>
+</button>
+
+<ng-template #shareModal>
+  <!-- sharing Modal-->
+  <div class="modal-header">
+    <h5 class="modal-title" i18n>Share</h5>
+    <button type="button"  class="btn-close"  (click)="hideModal()" data-dismiss="modal" aria-label="Close">
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #shareForm="ngForm" class="form-horizontal">
+      <div class="row">
+        <div class="col-7 col-sm-9">
+          <input id="shareLink"
+                 name="shareLink"
+                 placeholder="link"
+                 class="form-control input-md"
+                 type="text"
+                 [ngModel]="url">
+        </div>
+        <div class="col-5 col-sm-3">
+          <button id="copyButton" name="copyButton"
+                  ngxClipboard
+                  [cbContent]="url"
+                  (cbOnSuccess)="onCopy()"
+                  [disabled]="!shareForm.form.valid"
+                  class="btn btn-primary btn-block" i18n>Copy
+          </button>
+        </div>
+      </div>
+      <hr/>
+      <div class="row">
+        <div class="col-4">
+          <label class="control-label" for="sharing-dir" i18n>Sharing:</label>
+        </div>
+        <div class="col-8">
+          <input disabled type="text"
+                 name="sharing-dir"
+                 id="sharing-dir"
+                 class="full-width form-control"
+                 [ngModel]="currentDir">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4">
+          <label class="control-label" for="includeSubfolders" i18n>Include subfolders:</label>
+        </div>
+        <div class="col-8">
+          <bSwitch
+            class="switch"
+            name="includeSubfolders"
+            id="includeSubfolders"
+            [switch-on-color]="'success'"
+            [switch-inverse]="true"
+            [switch-off-text]="text.No"
+            [switch-on-text]="text.Yes"
+            [switch-handle-width]="100"
+            [switch-label-width]="20"
+            (change)="update()"
+            [(ngModel)]="input.includeSubfolders">
+          </bSwitch>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4">
+          <label class="control-label" for="share-password">
+            <ng-container i18n>Password</ng-container>
+            *:
+          </label>
+        </div>
+        <div class="col-8" *ngIf="passwordProtection">
+          <input id="share-password"
+                 class="form-control"
+                 name="share-password"
+                 type="password"
+                 (change)="update()"
+                 [(ngModel)]="input.password"
+                 i18n-placeholder
+                 placeholder="Password"
+                 required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4">
+          <label class="control-label" for="valid-from" i18n>Valid:</label>
+        </div>
+        <div class="col-4" style="padding-right: 1px">
+          <input class="form-control" [(ngModel)]="input.valid.amount" (change)="update()"
+                 name="valid-from"
+                 id="valid-from"
+                 [disabled]="input.valid.type === ValidityTypes.Forever"
+                 type="number" min="1" step="1"/>
+        </div>
+        <div class="col-4" style="padding-left: 1px">
+          <select class="form-select"
+                  [(ngModel)]="input.valid.type" (change)="update()" name="valid-to"
+                  required>
+            <option [ngValue]="ValidityTypes.Minutes" i18n>Minutes</option>
+            <option [ngValue]="ValidityTypes.Hours" i18n>Hours</option>
+            <option [ngValue]="ValidityTypes.Days" i18n>Days</option>
+            <option [ngValue]="ValidityTypes.Months" i18n>Months</option>
+            <option [ngValue]="ValidityTypes.Forever" i18n>Forever</option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

@@ -1,0 +1,16 @@
+.modal {
+  z-index: 9999;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.row {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+#shareButton span {
+  padding-right: 0.3rem;
+}

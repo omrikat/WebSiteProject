@@ -1,0 +1,155 @@
+<ng-template #popTemplate>
+  <span i18n>Application version</span>: v{{(settingsService.settings | async).Server.Environment.appVersion}}
+  <ng-container *ngIf="(settingsService.settings | async).Server.Environment.buildTime">
+    <br/>
+    <span i18n>Built at</span>: {{(settingsService.settings | async).Server.Environment.buildTime | date:'medium' }}
+  </ng-container>
+  <ng-container *ngIf="(settingsService.settings | async).Server.Environment.buildCommitHash">
+    <br/>
+    <span i18n>Git commit</span>: {{(settingsService.settings | async).Server.Environment.buildCommitHash}}
+  </ng-container>
+</ng-template>
+<app-frame>
+  <div body class="container-fluid">
+
+    <div class="card mb-4" *ngIf="notificationService.countedNotifications.length>0">
+      <h5 class="card-header" i18n>
+        Server notifications
+      </h5>
+      <div class="card-body">
+        <ng-container *ngFor="let notification of notificationService.countedNotifications">
+
+          <div class="alert alert-{{getCss(notification.type)}}" role="alert">
+            ({{notification.count}}) {{notification.message}}
+            <br *ngIf="notification.details"/>
+            {{notification.details | json}}
+            <ng-container *ngIf="notification.request">
+              <br/>
+              Request: "{{notification.request.method}}", url: "{{notification.request.url}}", status code:
+              "{{notification.request.statusCode}}"
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="card-footer" i18n>
+        To dismiss these notifications, restart the server.
+      </div>
+    </div>
+    <div class="form-horizontal">
+      <div class="d-flex justify-content-between">
+        <div>
+          <a triggers="mouseenter:mouseleave"
+             placement="bottom"
+             [popover]="popTemplate"
+             class="version"
+             href="https://github.com/bpatrik/pigallery2/releases">
+            <span
+              i18n>App version:</span>&nbsp;<span>{{'v' + ((settingsService.settings | async).Server.Environment.appVersion || '----')}}</span>
+          </a>
+        </div>
+        <div class="mb-1">
+          <label class="control-label align-self-end me-2" for="simplifiedMode" i18n>Mode</label>
+          <bSwitch
+            id="simplifiedMode"
+            class="switch"
+            name="simplifiedMode"
+            switch-off-color="warning"
+            switch-on-color="primary"
+            [switch-inverse]="true"
+            switch-off-text="Advanced"
+            switch-on-text="Simplified"
+            i18n-switch-off-text
+            i18n-switch-on-text
+            [switch-handle-width]="100"
+            [switch-label-width]="20"
+            [(ngModel)]="simplifiedMode"
+            (ngModelChange)="modeToggle()">
+          </bSwitch>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-2 ">
+        <nav class="nav flex-column sticky-top">
+          <div class="card">
+            <div class="card-body text-md-start text-center align-content-md-start align-content-center">
+              <h5 i18n="title of left card in settings page that contains settings contents" class="card-title">
+                Menu</h5>
+              <button class="btn btn-link nav-link text-start py-md-1 px-md-0"
+                      *ngFor="let s of contents; let i=index;"
+                      (click)="scrollTo(i)"
+                      [hidden]="!s.HasAvailableSettings">
+                <span class="oi oi-{{s.icon}}"></span> {{s.Name}}
+              </button>
+            </div>
+          </div>
+
+        </nav>
+      </div>
+      <div class="col-md-10">
+        <app-settings-basic #setting #basic
+                            [simplifiedMode]="simplifiedMode"
+                            [hidden]="!basic.HasAvailableSettings"></app-settings-basic>
+        <app-settings-usermanager #setting #userManager
+                                  [hidden]="!userManager.HasAvailableSettings"></app-settings-usermanager>
+        <app-settings-database #setting #database
+                               [simplifiedMode]="simplifiedMode"
+                               [hidden]="!database.HasAvailableSettings"></app-settings-database>
+        <app-settings-photo #setting #photo
+                            [hidden]="!photo.HasAvailableSettings"
+                            [simplifiedMode]="simplifiedMode"></app-settings-photo>
+        <app-settings-video #setting #video
+                            [hidden]="!video.HasAvailableSettings"
+                            [simplifiedMode]="simplifiedMode"></app-settings-video>
+        <app-settings-thumbnail #setting #thumbnail
+                                [hidden]="!thumbnail.HasAvailableSettings"
+                                [simplifiedMode]="simplifiedMode"></app-settings-thumbnail>
+        <app-settings-preview #setting #preview
+                              [hidden]="!preview.HasAvailableSettings"
+                              [simplifiedMode]="simplifiedMode"></app-settings-preview>
+        <app-settings-search #setting #search
+                             [hidden]="!search.HasAvailableSettings"
+                             [simplifiedMode]="simplifiedMode"></app-settings-search>
+        <app-settings-share #setting #share
+                            [hidden]="!share.HasAvailableSettings"
+                            [simplifiedMode]="simplifiedMode"></app-settings-share>
+        <app-settings-map #setting #map
+                          [hidden]="!map.HasAvailableSettings"
+                          [simplifiedMode]="simplifiedMode"></app-settings-map>
+        <app-settings-meta-file #setting #metaFile
+                                [hidden]="!metaFile.HasAvailableSettings"
+                                [simplifiedMode]="simplifiedMode"></app-settings-meta-file>
+        <app-settings-other #setting #other
+                            [hidden]="!other.HasAvailableSettings"
+                            [simplifiedMode]="simplifiedMode"></app-settings-other>
+        <app-settings-random-photo #setting #random
+                                   [hidden]="!random.HasAvailableSettings"
+                                   [simplifiedMode]="simplifiedMode"></app-settings-random-photo>
+        <app-settings-faces #setting #faces
+                            [hidden]="!faces.HasAvailableSettings"
+                            [simplifiedMode]="simplifiedMode"></app-settings-faces>
+        <app-settings-albums #setting #albums
+                             [hidden]="!albums.HasAvailableSettings"
+                             [simplifiedMode]="simplifiedMode"></app-settings-albums>
+        <app-settings-indexing #setting #indexing
+                               [hidden]="!indexing.HasAvailableSettings"
+                               [simplifiedMode]="simplifiedMode"></app-settings-indexing>
+        <app-settings-jobs #setting #jobs
+                           [hidden]="!jobs.HasAvailableSettings"
+                           [simplifiedMode]="simplifiedMode"></app-settings-jobs>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="text-right">
+          <ng-container i18n>Up time</ng-container><!--
+            -->: {{(settingsService.settings | async).Server.Environment.upTime | date:'medium'}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</app-frame>

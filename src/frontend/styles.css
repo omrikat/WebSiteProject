@@ -1,0 +1,51 @@
+
+
+a {
+  text-decoration: none;
+}
+
+.navbar-right {
+  margin-right: 0;
+}
+
+.bootstrap-switch-label {
+  margin-right: -4px;
+  margin-left: -4px;
+}
+
+.changed-settings .bootstrap-switch {
+  border-color: var(--bs-primary);
+  border-width: 1px;
+}
+
+#toast-container > div {
+  opacity: 1;
+}
+
+bs-dropdown-container {
+  z-index: 1;
+}
+
+
+.slim-loading-bar-progress {
+  transition: opacity 1s ease-in;
+  transition-delay: 1s;
+  transition-property: opacity;
+}
+
+
+element.style {
+  width: 100px;
+}
+.bootstrap-switch.bootstrap-switch-inverse .bootstrap-switch-handle-on {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-success, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-success{
+  background: var(--bs-success);
+}
+.bootstrap-switch .bootstrap-switch-handle-on.bootstrap-switch-primary, .bootstrap-switch .bootstrap-switch-handle-off.bootstrap-switch-primary{
+  background: var(--bs-primary);
+}

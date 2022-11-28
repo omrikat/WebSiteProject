@@ -1,0 +1,19 @@
+<div class="dropdown" dropdown>
+  <button dropdownToggle
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="language"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="true"
+          [ngClass]="isDark?'dark':''">
+    <ng-container *ngIf="current != null">
+      {{current}}
+    </ng-container>
+    <span *ngIf="current == null" class="oi oi-globe"></span>
+
+  </button>
+  <div *dropdownMenu class="dropdown-menu" aria-labelledby="language">
+    <a *ngFor="let lang of languages" class="dropdown-item" href="/{{lang}}">{{lang}}</a>
+  </div>
+</div>

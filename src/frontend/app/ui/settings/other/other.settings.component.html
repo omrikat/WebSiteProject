@@ -1,0 +1,132 @@
+<form #settingsForm="ngForm" class="form-horizontal">
+  <div class="card mb-4">
+    <h5 class="card-header">
+      <span class="oi oi-{{icon}}"></span> {{Name}}
+    </h5>
+    <div class="card-body">
+      <div [hidden]="!error" class="alert alert-danger" role="alert"><strong i18n>Error: </strong>{{error}}</div>
+
+
+      <p class="title" i18n>Threads:</p>
+
+
+      <app-settings-entry
+        name="Threading"
+        description="Runs directory scanning in a different thread."
+        i18n-description i18n-name
+        [ngModel]="states.Server.enabled">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="Thumbnail threads"
+        description="Number of threads that are used to generate thumbnails. If auto, number of CPU cores -1 threads will be used."
+        i18n-description i18n-name
+        [ngModel]="states.Server.thumbnailThreads"
+        [options]="threads"
+        [simplifiedMode]="simplifiedMode || states.Server.enabled.value == false"
+        [required]="true">
+      </app-settings-entry>
+
+
+      <hr/>
+      <p class="title" i18n>Misc:</p>
+
+      <app-settings-entry
+        name="Scroll based thumbnail generation"
+        description="Those thumbnails get higher priority that are visible on the screen."
+        i18n-description i18n-name
+        [ngModel]="states.Client.enableOnScrollThumbnailPrioritising">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Lazy image rendering"
+        description="Shows only the required amount of photos at once. Renders more if page bottom is reached."
+        i18n-description i18n-name
+        [ngModel]="states.Client.enableOnScrollRendering">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Cache"
+        description="Caches directory contents and search results for better performance."
+        i18n-description i18n-name
+        [ngModel]="states.Client.enableCache">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Caption first naming"
+        description="Show the caption (IPTC 120) tags from the EXIF data instead of the filenames."
+        i18n-description i18n-name
+        [ngModel]="states.Client.captionFirstNaming">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Download Zip"
+        description="[Experimental: does not work for searches] Enable download zip of a directory contents"
+        i18n-description i18n-name
+        [ngModel]="states.Client.enableDownloadZip">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Directory flattening"
+        description="[Experimental: won't work if the gallery multiple folders with the same path] Adds a button to flattens the file structure, by listing the content of all subdirectories."
+        link="https://github.com/bpatrik/pigallery2/issues/174"
+        linkText="See 174."
+        i18n-description i18n-name
+        [ngModel]="states.Client.enableDirectoryFlattening">
+      </app-settings-entry>
+
+
+      <hr/>
+      <p class="title" i18n>Navigation bar:</p>
+
+      <app-settings-entry
+        name="Show item count"
+        description="Show the number of items (photos) in the folder."
+        i18n-description i18n-name
+        [ngModel]="states.Client.NavBar.showItemCount"
+        [simplifiedMode]="simplifiedMode"
+        [required]="true">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="Default photo sorting method"
+        i18n-name
+        [ngModel]="states.Client.defaultPhotoSortingMethod"
+        [optionMap]="sortingMap"
+        [simplifiedMode]="simplifiedMode"
+        [required]="true">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Sort directories by date"
+        description="If enabled, directories will be sorted by date, like photos, otherwise by name. Directory date is the last modification time of that directory not the creation date of the oldest photo."
+        i18n-description i18n-name
+        [ngModel]="states.Client.enableDirectorySortingByDate"
+        [simplifiedMode]="simplifiedMode"
+        [required]="true">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Custom HTML Head"
+        description="Injects the content of this between the <head></head> HTML tags of the app. (You can use it add analytics or custom code to the app)"
+        [ngModel]="states.Client.customHTMLHead"
+        i18n-name
+        [simplifiedMode]="simplifiedMode">
+      </app-settings-entry>
+
+
+      <button class="btn btn-success float-end"
+              [disabled]="!settingsForm.form.valid || !changed || inProgress"
+              (click)="save()" i18n>Save
+      </button>
+      <button class="btn btn-secondary float-end"
+              [disabled]=" !changed || inProgress"
+              (click)="reset()" i18n>Reset
+      </button>
+    </div>
+  </div>
+
+
+</form>

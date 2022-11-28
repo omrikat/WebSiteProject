@@ -1,0 +1,13 @@
+.blog {
+}
+
+.card-body {
+  overflow: hidden;
+}
+
+.text-preview {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+  overflow: hidden;
+}

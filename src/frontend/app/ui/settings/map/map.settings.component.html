@@ -1,0 +1,111 @@
+<form #settingsForm="ngForm" class="form-horizontal">
+  <div class="card mb-4">
+    <h5 class="card-header">
+      <span class="oi oi-{{icon}}"></span> {{Name}}
+      <div class="switch-wrapper">
+        <bSwitch
+          class="switch"
+          name="enabled"
+          switch-on-color="success"
+          [switch-inverse]="true"
+          switch-off-text="Disabled"
+          switch-on-text="Enabled"
+          i18n-switch-off-text
+          i18n-switch-on-text
+          [switch-disabled]="inProgress"
+          [switch-handle-width]="100"
+          [switch-label-width]="20"
+          [(ngModel)]="states.enabled.value">
+        </bSwitch>
+      </div>
+    </h5>
+    <div class="card-body">
+      <div [hidden]="!error" class="alert alert-danger" role="alert"><strong>Error: </strong>{{error}}</div>
+      <ng-container *ngIf="states.enabled.value">
+
+
+        <app-settings-entry
+          name="Use image markers"
+          description="Map will use thumbnail images as markers instead of the default pin."
+          i18n-name i18n-description=""
+          [ngModel]="states.useImageMarkers"
+          [simplifiedMode]="simplifiedMode">
+        </app-settings-entry>
+
+
+        <app-settings-entry
+          name="Map provider"
+          i18n-name
+          [ngModel]="states.mapProvider"
+          [simplifiedMode]="simplifiedMode"
+          [required]="true">
+        </app-settings-entry>
+
+
+        <div class="container custom-layer-container" *ngIf="states.mapProvider.value === MapProviders.Custom">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th i18n>Name</th>
+              <th i18n>Tile Url*</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tr *ngFor="let layer of states.customLayers.value; let i = index">
+              <td><input type="text" class="form-control" placeholder="Street"
+                         [(ngModel)]="layer.name"
+                         [name]="'tileName-'+i" [id]="'tileName-'+i" required></td>
+              <td>
+                <input type="text" class="form-control" placeholder="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                       [(ngModel)]="layer.url"
+                       [name]="'tileUrl-'+i" [id]="'tileUrl-'+i" required>
+              </td>
+              <td>
+                <button [disabled]="states.customLayers.value.length == 1" (click)="removeLayer(layer)"
+                        [ngClass]="states.customLayers.value.length > 1? 'btn-danger':'btn-secondary'"
+                        class="btn float-end">
+                  <span class="oi oi-trash" aria-hidden="true" aria-label="Delete"></span>
+                </button>
+              </td>
+            </tr>
+          </table>
+
+          <div class="row justify-content-end">
+            <small class="form-text text-muted custom-layer-info">
+              <ng-container i18n>*The map module will use these urls to fetch the map tiles.</ng-container>
+            </small>
+          </div>
+          <div class="row justify-content-end">
+            <button class="btn btn-primary"
+                    (click)="addNewLayer()" i18n>+ Add Layer
+            </button>
+          </div>
+        </div>
+
+        <app-settings-entry
+          *ngIf="states.mapProvider.value === MapProviders.Mapbox"
+          name="Mapbox access token"
+          i18n-name
+          placeholder="Mapbox access token"
+          [ngModel]="states.mapboxAccessToken"
+          [required]="true">
+          <small class="form-text text-muted">
+            <ng-container i18n>MapBox needs an access token to work, create one at</ng-container>
+            &nbsp;<a href="https://www.mapbox.com">https://www.mapbox.com</a>.
+          </small>
+        </app-settings-entry>
+
+
+      </ng-container>
+      <button class="btn btn-success float-end"
+              [disabled]="!settingsForm.form.valid || !changed || inProgress"
+              (click)="save()" i18n>Save
+      </button>
+      <button class="btn btn-secondary float-end"
+              [disabled]=" !changed || inProgress"
+              (click)="reset()" i18n>Reset
+      </button>
+    </div>
+  </div>
+
+</form>

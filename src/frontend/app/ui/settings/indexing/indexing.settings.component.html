@@ -1,0 +1,131 @@
+<form #settingsForm="ngForm" class="form-horizontal">
+  <div class="card mb-4">
+    <h5 class="card-header">
+      <span class="oi oi-{{icon}}"></span> {{Name}}
+    </h5>
+    <div class="card-body">
+      <div [hidden]="!error" class="alert alert-danger" role="alert"><strong>Error: </strong>{{error}}</div>
+
+      <ng-container *ngIf="!simplifiedMode">
+
+        <app-settings-entry
+          name="Index cache timeout [ms]"
+          description="If there was no indexing in this time, it reindexes. (skipped if indexes are in DB and sensitivity is low)"
+          i18n-description i18n-name
+          [ngModel]="states.cachedFolderTimeout"
+          [required]="true">
+        </app-settings-entry>
+
+
+        <app-settings-entry
+          name="Folder reindexing sensitivity"
+          [ngModel]="states.reIndexingSensitivity"
+          description="Set the reindexing sensitivity. High value check the folders for change more often."
+          i18n-description i18n-name
+          [required]="true">
+        </app-settings-entry>
+
+        <app-settings-entry
+          name="Exclude Folder List"
+          i18n-name
+          placeholder="/media/images/family/private;private;family/private"
+          [ngModel]="states.excludeFolderList">
+          <small class="form-text text-muted">
+            <ng-container i18n>Folders to exclude from indexing</ng-container>
+            <br/>
+            <ng-container
+              i18n>';' separated strings. If an entry starts with '/' it is treated as an absolute path. If it doesn't
+              start with '/' but contains a '/', the path is relative to the image directory. If it doesn't contain a
+              '/', any folder with this name will be excluded.
+            </ng-container>
+          </small>
+        </app-settings-entry>
+
+        <app-settings-entry
+          name="Exclude File List"
+          i18n-name
+          placeholder=".ignore;.pg2ignore"
+          [ngModel]="states.excludeFileList">
+          <small class="form-text text-muted">
+            <ng-container i18n>Files that mark a folder to be excluded from indexing</ng-container>
+            <br/>
+            <ng-container
+              i18n>';' separated strings. Any folder that contains a file with this name will be excluded from
+              indexing.
+            </ng-container>
+          </small>
+        </app-settings-entry>
+
+
+        <button class="btn btn-success float-end"
+                [disabled]="!settingsForm.form.valid || !changed || inProgress"
+                (click)="save()" i18n>Save
+        </button>
+        <button class="btn btn-secondary float-end"
+                [disabled]=" !changed || inProgress"
+                (click)="reset()" i18n>Reset
+        </button>
+        <br/>
+        <hr/>
+      </ng-container>
+
+      <div class="alert alert-secondary" role="alert">
+        <ng-container i18n>If you add a new folder to your gallery, the site indexes it automatically.</ng-container>&nbsp;
+        <ng-container i18n>If you would like to trigger indexing manually, click index button.</ng-container>
+        <br/>
+        (
+        <ng-container i18n>Note: search only works among the indexed directories</ng-container>
+        )
+      </div>
+
+
+      <app-settings-job-progress [progress]="Progress"></app-settings-job-progress>
+
+      <app-settings-job-button #indexingButton
+                               [soloRun]="true"
+                               (jobError)="error=$event"
+                               [allowParallelRun]="false"
+                               [jobName]="indexingJobName"
+                               [config]="Config"></app-settings-job-button>
+
+
+      <app-settings-job-button class="ms-md-2 mt-2 mt-md-0"
+                               [danger]="true"
+                               [soloRun]="true"
+                               (jobError)="error=$event"
+                               [allowParallelRun]="false"
+                               [disabled]="indexingButton.Running"
+                               [jobName]="resetJobName"></app-settings-job-button>
+
+
+      <hr/>
+      <div class="row statics">
+        <div class="col-md-2 col-12" i18n>
+          Statistic:
+        </div>
+        <div class="col-md-2 col-6">
+          <span class="oi oi-folder" title="Folders" i18n-title aria-hidden="true">  </span>
+          {{settingsService.statistic.value ? settingsService.statistic.value.directories : '...'}}
+        </div>
+        <div class="col-md-2 col-6">
+          <span class="oi oi-camera-slr" title="Photos" i18n-title aria-hidden="true">  </span>
+          {{settingsService.statistic.value ? settingsService.statistic.value.photos : '...'}}
+        </div>
+        <div class="col-md-2 col-6">
+          <span class="oi oi-video" title="Videos" i18n-title aria-hidden="true">  </span>
+          {{settingsService.statistic.value ? settingsService.statistic.value.videos : '...'}}
+
+        </div>
+        <div class="col-md-2 col-6">
+          <span class="oi oi-people" title="Persons" i18n-title aria-hidden="true">  </span>
+          {{settingsService.statistic.value ? settingsService.statistic.value.persons : '...'}}
+        </div>
+        <div class="col-md-2 col-6">
+          <span class="oi oi-pie-chart" title="Size" i18n-title aria-hidden="true">  </span>
+          {{settingsService.statistic.value ? (settingsService.statistic.value.diskUsage | fileSize) : '...'}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>

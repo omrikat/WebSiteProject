@@ -1,0 +1,269 @@
+<form #settingsForm="ngForm" class="form-horizontal">
+  <div class="card mb-4">
+    <h5 class="card-header">
+      <span class="oi oi-{{icon}}"></span> {{Name}}
+    </h5>
+    <div class="card-body">
+      <div [hidden]="!error" class="alert alert-danger" role="alert"><strong>Error: </strong>{{error}}</div>
+
+      <div *ngFor="let schedule of sortedSchedules() as schedules; let i= index">
+        <div class="card bg-light {{shouldIdent(schedule,schedules[i-1])? 'ms-4' : ''}}">
+          <div class="card-header">
+            <div class="d-flex justify-content-between">
+              <div class="clickable"
+                   (click)="showDetails[schedule.name]=!showDetails[schedule.name]">
+                <span class="oi oi-chevron-{{showDetails[schedule.name] ? 'bottom' : 'right'}}"></span>
+                {{schedule.name}} @<!--
+              -->
+                <ng-container [ngSwitch]="schedule.trigger.type">
+                  <ng-container *ngSwitchCase="JobTriggerType.periodic">
+                    <ng-container i18n>every</ng-container>
+                    {{periods[$any(schedule.trigger).periodicity]}} {{atTimeLocal($any(schedule.trigger).atTime) | date:"HH:mm (z)"}}
+                  </ng-container>
+                  <ng-container
+                    *ngSwitchCase="JobTriggerType.scheduled">{{$any(schedule.trigger).time | date:"medium"}}</ng-container>
+                  <ng-container *ngSwitchCase="JobTriggerType.never" i18n>never</ng-container>
+                  <ng-container *ngSwitchCase="JobTriggerType.after">
+                    <ng-container i18n>after</ng-container>
+                    : {{$any(schedule.trigger).afterScheduleName}}
+                  </ng-container>
+                </ng-container>
+              </div>
+              <div>
+                <button class="btn btn-danger job-control-button ms-0" (click)="remove(schedule)"><span
+                  class="oi oi-trash"></span>
+                </button>
+                <app-settings-job-button class="job-control-button ms-md-2 mt-2 mt-md-0"
+                                         (jobError)="error=$event"
+                                         [allowParallelRun]="schedule.allowParallelRun"
+                                         [jobName]="schedule.jobName" [config]="schedule.config"
+                                         [shortName]="true"></app-settings-job-button>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="card-body" [hidden]="!showDetails[schedule.name]">
+            <div class="row">
+
+              <div class="col-md-12">
+                <div class="mb-1 row">
+                  <label class="col-md-2 control-label" [for]="'jobName'+i" i18n>Job:</label>
+                  <div class="col-md-4">
+                    {{backendTextService.getJobName(schedule.jobName)}}
+                  </div>
+                  <div class="col-md-6">
+                    <app-settings-job-button class="float-end"
+                                             [jobName]="schedule.jobName"
+                                             [allowParallelRun]="schedule.allowParallelRun"
+                                             (jobError)="error=$event"
+                                             [config]="schedule.config"></app-settings-job-button>
+
+                  </div>
+                </div>
+                <div class="mb-1 row">
+                  <label class="col-md-2 control-label" [for]="'repeatType'+i" i18n>Periodicity:</label>
+                  <div class="col-md-10">
+                    <select class="form-select" [(ngModel)]="schedule.trigger.type"
+                            (ngModelChange)="jobTriggerTypeChanged($event,schedule)"
+                            [name]="'repeatType'+i" required>
+                      <option *ngFor="let jobTrigger of JobTriggerTypeMap"
+                              [ngValue]="jobTrigger.key">{{jobTrigger.value}}
+                      </option>
+                    </select>
+                    <small class="form-text text-muted"
+                           i18n>Set the time to run the job.
+                    </small>
+                  </div>
+                </div>
+
+                <div class="mb-3 row" *ngIf="schedule.trigger.type == JobTriggerType.after">
+                  <label class="col-md-2 control-label" [for]="'triggerAfter'+i" i18n>After:</label>
+                  <div class="col-md-10">
+                    <select class="form-select" [(ngModel)]="schedule.trigger.afterScheduleName"
+                            [name]="'triggerAfter'+i" required>
+                      <ng-container *ngFor="let sch of states.scheduled.value">
+                        <option *ngIf="sch.name !== schedule.name"
+                                [ngValue]="sch.name">{{sch.name}}
+                        </option>
+                      </ng-container>
+                    </select>
+                    <small class="form-text text-muted"
+                           i18n>The job will run after that job finishes.
+                    </small>
+                  </div>
+                </div>
+
+
+                <div class="mb-3 row" *ngIf="schedule.trigger.type == JobTriggerType.scheduled">
+                  <label class="col-md-2 control-label" [for]="'triggerTime'+i" i18n>At:</label>
+                  <div class="col-md-10">
+                    <app-timestamp-datepicker
+                      [name]="'triggerTime'+i"
+                      (timestampChange)="onOptionChange()"
+                      [(timestamp)]="schedule.trigger.time"></app-timestamp-datepicker>
+                  </div>
+                </div>
+
+                <div class="mb-3 row" *ngIf="schedule.trigger.type == JobTriggerType.periodic">
+                  <label class="col-md-2 control-label" [for]="'periodicity'+i" i18n>At:</label>
+                  <div class="col-md-10">
+                    <select
+                      class="form-select" [(ngModel)]="schedule.trigger.periodicity"
+                      [name]="'periodicity' + i"
+                      required>
+                      <option *ngFor="let period of periods; let i = index"
+                              [ngValue]="i">
+                        <ng-container i18n>every</ng-container>
+                        {{period}}
+                      </option>
+                    </select>
+                    <app-timestamp-timepicker
+                      [name]="'atTime'+i"
+                      (timestampChange)="onOptionChange()"
+                      [(timestamp)]="schedule.trigger.atTime"></app-timestamp-timepicker>
+                  </div>
+                </div>
+                <div class="mb-3 row">
+                  <label class="col-md-2 control-label" [for]="'allowParallelRun'+i" i18n>Allow parallel run</label>
+                  <div class="col-md-10">
+                    <bSwitch
+                      class="switch"
+                      [name]="'allowParallelRun'+'_'+i"
+                      [id]="'allowParallelRun'+'_'+i"
+                      switch-on-color="primary"
+                      [switch-inverse]="true"
+                      switch-off-text="Disabled"
+                      switch-on-text="Enabled"
+                      i18n-switch-off-text i18n-switch-on-text
+                      [switch-handle-width]="100"
+                      [switch-label-width]="20"
+                      [(ngModel)]="schedule.allowParallelRun">
+                    </bSwitch>
+                    <small class="form-text text-muted"
+                           i18n>Enables the job to start even if another job is already running.
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+            <ng-container *ngIf="getConfigTemplate(schedule.jobName) ">
+              <hr/>
+              <div *ngFor="let configEntry of  getConfigTemplate(schedule.jobName)">
+
+                <div class="mb-3 row">
+                  <label class="col-md-2 control-label"
+                         [for]="configEntry.id+'_'+i">{{backendTextService.get(configEntry.name)}}:</label>
+                  <div class="col-md-10">
+                    <ng-container [ngSwitch]="configEntry.type">
+                      <ng-container *ngSwitchCase="'boolean'">
+                        <bSwitch
+                          class="switch"
+                          [name]="configEntry.id+'_'+i"
+                          [id]="configEntry.id+'_'+i"
+                          switch-on-color="primary"
+                          [switch-inverse]="true"
+                          switch-off-text="Disabled"
+                          switch-on-text="Enabled"
+                          i18n-switch-off-text i18n-switch-on-text
+                          [switch-handle-width]="100"
+                          [switch-label-width]="20"
+                          [(ngModel)]="schedule.config[configEntry.id]">
+                        </bSwitch>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'string'">
+                        <input type="text" class="form-control" [name]="configEntry.id+'_'+i"
+                               [id]="configEntry.id+'_'+i"
+                               [(ngModel)]="schedule.config[configEntry.id]" required>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'number'">
+                        <input type="number" class="form-control" [name]="configEntry.id+'_'+i"
+                               [id]="configEntry.id+'_'+i"
+                               [(ngModel)]="schedule.config[configEntry.id]" required>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'number-array'">
+                        <input type="text" class="form-control"
+                               [name]="configEntry.id+'_'+i"
+                               [id]="configEntry.id+'_'+i"
+                               (ngModelChange)="setNumberArray(schedule.config,configEntry.id,$event)"
+                               [ngModel]="getNumberArray(schedule.config,configEntry.id)" required>
+                      </ng-container>
+                    </ng-container>
+                    <small class="form-text text-muted">
+                      <ng-container *ngIf="configEntry.type == 'number-array'" i18n>';' separated integers.
+                      </ng-container>
+                      {{backendTextService.get(configEntry.description)}}
+                    </small>
+                  </div>
+                </div>
+
+              </div>
+            </ng-container>
+          </div>
+
+          <app-settings-job-progress
+            class="card-footer bg-transparent"
+            *ngIf="getProgress(schedule)"
+            [progress]="getProgress(schedule)">
+          </app-settings-job-progress>
+
+        </div>
+      </div>
+      <button class="btn btn-success float-end"
+              [disabled]="!settingsForm.form.valid || !changed || inProgress"
+              (click)="save()" i18n>Save
+      </button>
+      <button class="btn btn-secondary float-end"
+              [disabled]=" !changed || inProgress"
+              (click)="reset()" i18n>Reset
+      </button>
+      <button class="btn btn-primary float-end"
+              (click)="prepareNewJob()" i18n>+ Add Job
+      </button>
+    </div>
+
+  </div>
+
+</form>
+
+
+<!-- Modal -->
+<div bsModal #jobModal="bs-modal" class="modal fade" id="jobModal" tabindex="-1" role="dialog"
+     aria-labelledby="jobModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="jobModalLabel" i18n>Add new job</h5>
+        <button type="button"  class="btn-close"  (click)="jobModal.hide()" data-dismiss="modal" aria-label="Close">
+        </button>
+      </div>
+      <form #jobModalForm="ngForm">
+        <div class="modal-body">
+          <select class="form-select" (change)="jobTypeChanged(newSchedule)" [(ngModel)]="newSchedule.jobName"
+                  name="newJobName" required>
+            <option *ngFor="let availableJob of settingsService.availableJobs | async"
+                    [ngValue]="availableJob.Name">{{backendTextService.getJobName(availableJob.Name)}}
+            </option>
+          </select>
+          <small class="form-text text-muted"
+                 i18n>Select a job to schedule.
+          </small>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="jobModal.hide()" i18n>Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal"
+                  (click)="addNewJob()"
+                  [disabled]="!jobModalForm.form.valid" i18n>Add Job
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

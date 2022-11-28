@@ -1,0 +1,28 @@
+.title {
+  margin-left: -5px;
+}
+
+.btn {
+  margin-left: 10px;
+}
+
+
+.switch-wrapper {
+  display: inline-block;
+  text-align: right;
+  padding: 0;
+  float: right;
+  margin-top: -4px;
+  margin-bottom: -4px;
+
+}
+
+.changed-settings input {
+  border-color: var(--bs-primary);
+  border-width: 1.5px;
+}
+
+.changed-settings label {
+  color: var(--bs-primary);
+  font-weight: bold;
+}

@@ -1,0 +1,17 @@
+
+.card {
+  margin-bottom: 1rem;
+}
+
+.job-control-button {
+  margin-top: -5px;
+  margin-bottom: -5px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.separator {
+  width: 2px;
+}

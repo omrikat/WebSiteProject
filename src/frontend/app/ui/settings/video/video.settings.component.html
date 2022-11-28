@@ -1,0 +1,166 @@
+<form #settingsForm="ngForm" class="form-horizontal">
+  <div class="card mb-4">
+    <h5 class="card-header">
+      <span class="oi oi-{{icon}}"></span> {{Name}}
+      <div class="switch-wrapper">
+        <bSwitch
+          class="switch"
+          name="enabled"
+          switch-on-color="success"
+          [switch-inverse]="true"
+          switch-off-text="Disabled"
+          switch-on-text="Enabled"
+          i18n-switch-off-text
+          i18n-switch-on-text
+          [switch-disabled]="inProgress"
+          [switch-handle-width]="100"
+          [switch-label-width]="20"
+          [(ngModel)]="states.client.enabled.value">
+        </bSwitch>
+      </div>
+    </h5>
+    <div class="card-body">
+      <div [hidden]="!error" class="alert alert-danger" role="alert"><strong>Error: </strong>{{error}}</div>
+
+      <div class="alert alert-secondary" role="alert">
+        <ng-container i18n>Video support uses ffmpeg. ffmpeg and ffprobe binaries need to be available in the PATH or
+          the
+          @ffmpeg-installer/ffmpeg and @ffprobe-installer/ffprobe optional node packages need to be installed.
+        </ng-container>
+      </div>
+      <hr/>
+
+      <p class="title" i18n>Video transcoding:</p>
+      <div class="alert alert-secondary" role="alert">
+        <ng-container i18n>To ensure smooth video playback, video transcoding is recommended to a lower bit rate than
+          the
+          server's upload rate.
+        </ng-container>&nbsp;
+        <ng-container i18n>The transcoded videos will be save to the thumbnail folder.</ng-container>&nbsp;
+        <ng-container i18n>You can trigger the transcoding manually, but you can also create an automatic encoding job
+          in
+          advanced settings mode.
+        </ng-container>&nbsp;
+      </div>
+
+      <app-settings-entry
+        name="Format"
+        i18n-name
+        [ngModel]="states.server.transcoding.format"
+        [simplifiedMode]="simplifiedMode"
+        (ngModelChange)="formatChanged($event)"
+        [options]="formats"
+        [required]="true">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Codec"
+        i18n-name
+        [ngModel]="states.server.transcoding.codec"
+        [simplifiedMode]="simplifiedMode"
+        [options]="codecs[states.server.transcoding.format.value]"
+        [required]="true">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Resolution"
+        description="The height of the output video will be scaled down to this, while keeping the aspect ratio."
+        i18n-name i18n-description
+        [ngModel]="states.server.transcoding.resolution"
+        (change)="updateBitRate()"
+        [options]="resolutions"
+        [required]="true">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="FPS"
+        description="Target frame per second (fps) of the output video will be scaled down this this."
+        i18n-name i18n-description
+        [ngModel]="states.server.transcoding.fps"
+        (change)="updateBitRate()"
+        [options]="fps"
+        [simplifiedMode]="simplifiedMode"
+        [required]="true">
+      </app-settings-entry>
+
+
+      <div class="mb-3 row"
+           [class.changed-settings]="states.server.transcoding.bitRate.value !== states.server.transcoding.bitRate.default">
+        <label class="col-md-2 control-label" for="bitRate" i18n>Bit rate</label>
+        <div class="col-md-10">
+          <div class="input-group">
+            <input type="number" class="form-control" placeholder="2"
+                   id="bitRate"
+                   min="0"
+                   step="0.1"
+                   max="1000"
+                   [(ngModel)]="bitRate"
+                   name="bitRate" required>
+            <div class="input-group-append">
+              <span class="input-group-text">mbps</span>
+            </div>
+          </div>
+          <small class="form-text text-muted" i18n>Target bit rate of the output video will be scaled down this this.
+            This should be less than the
+            upload rate of your home server.</small>
+        </div>
+      </div>
+
+
+      <app-settings-entry
+        name="CRF"
+        description="The range of the Constant Rate Factor (CRF) scale is 0–51, where 0 is lossless, 23 is the default, and 51 is worst quality possible."
+        i18n-name i18n-description
+        [ngModel]="states.server.transcoding.crf"
+        [simplifiedMode]="simplifiedMode"
+        [required]="true">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Preset"
+        description="A preset is a collection of options that will provide a certain encoding speed to compression ratio. A slower preset will provide better compression (compression is quality per filesize)."
+        i18n-name i18n-description
+        [ngModel]="states.server.transcoding.preset"
+        [simplifiedMode]="simplifiedMode"
+        [required]="true">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Custom Options"
+        description="; separated values. It will be sent to ffmpeg as it is, as custom options."
+        placeholder="-pass 2; -minrate 1M; -maxrate 1M; -bufsize 2M"
+        i18n-name i18n-description
+        [ngModel]="states.server.transcoding.customOptions"
+        [allowSpaces]="true"
+        [simplifiedMode]="simplifiedMode"
+        [required]="true">
+      </app-settings-entry>
+
+
+      <button class="btn btn-success float-end"
+              [disabled]="!settingsForm.form.valid || !changed || inProgress"
+              (click)="save()" i18n>Save
+      </button>
+      <button class="btn btn-secondary float-end"
+              [disabled]=" !changed || inProgress"
+              (click)="reset()" i18n>Reset
+      </button>
+
+      <app-settings-job-button class="mt-2 mt-md-0 float-left"
+                               [soloRun]="true"
+                               (jobError)="error=$event"
+                               [allowParallelRun]="false"
+                               [jobName]="jobName"></app-settings-job-button>
+
+      <ng-container *ngIf="Progress != null">
+        <br/>
+        <hr/>
+        <app-settings-job-progress [progress]="Progress"></app-settings-job-progress>
+      </ng-container>
+
+
+    </div>
+  </div>
+
+</form>

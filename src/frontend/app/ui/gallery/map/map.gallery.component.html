@@ -1,0 +1,11 @@
+<app-gallery-map-lightbox [photos]="photos" [gpxFiles]="gpxFiles"></app-gallery-map-lightbox>
+<div class="clickable" id="map" #map (click)="click()">
+  <div
+    class="leaflet-map"
+    leaflet
+    [leafletOptions]="options"
+    [leafletLayers]="markerLayer"
+    (leafletMapReady)="onMapReady($event)">
+  </div>
+
+</div>

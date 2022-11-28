@@ -1,0 +1,106 @@
+<form #settingsForm="ngForm" class="form-horizontal">
+  <div class="card mb-4">
+    <h5 class="card-header">
+      <span class="oi oi-{{icon}}"></span> {{Name}}
+    </h5>
+    <div class="card-body">
+      <div [hidden]="!error" class="alert alert-danger" role="alert"><strong>Error: </strong>{{error}}</div>
+
+
+      <app-settings-entry
+        name="Page title"
+        [ngModel]="states.applicationTitle"
+        i18n-name
+        [required]="true"
+        [simplifiedMode]="simplifiedMode">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="Host"
+        [ngModel]="states.host"
+        description="Server will accept connections from this IPv6 or IPv4 address."
+        i18n-description i18n-name
+        placeholder="0.0.0.0"
+        [required]="true"
+        [simplifiedMode]="simplifiedMode">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="Port"
+        description="Port number. Port 80 is usually what you need."
+        i18n-description i18n-name
+        [ngModel]="states.port"
+        [required]="true"
+        [dockerWarning]="(settingsService.Settings | async).Server.Environment.isDocker"
+        [simplifiedMode]="simplifiedMode">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="Images folder"
+        description="Images are loaded from this folder (read permission required)"
+        placeholder="path"
+        i18n-description i18n-name
+        [required]="true"
+        [dockerWarning]="(settingsService.Settings | async).Server.Environment.isDocker"
+        [ngModel]="states.imagesFolder">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="Temp folder"
+        description="Thumbnails, converted photos, videos will be stored here (write
+            permission required)"
+        placeholder="path"
+        i18n-description i18n-name
+        [required]="true"
+        [dockerWarning]="(settingsService.Settings | async).Server.Environment.isDocker"
+        [ngModel]="states.tempFolder">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="Page public url"
+        [ngModel]="states.publicUrl"
+        (change)="onUrlChanged()"
+        description="If you access the page form local network its good to know the public
+            url for creating sharing link"
+        i18n-description i18n-name
+        [placeholder]="urlPlaceholder"
+        [simplifiedMode]="simplifiedMode">
+      </app-settings-entry>
+
+
+      <app-settings-entry
+        name="Url Base"
+        description="If you access the gallery under a sub url (like:
+            http://mydomain.com/myGallery), set it here. If it is not working you might miss the '/' from the beginning
+            of the
+            url."
+        placeholder="/myGallery"
+        i18n-description i18n-name
+        [ngModel]="states.urlBase"
+        (change)="onUrlBaseChanged()"
+        [simplifiedMode]="simplifiedMode">
+      </app-settings-entry>
+
+
+      <div *ngIf="urlError===true" class="alert alert-warning" role="alert" i18n>
+        The public url and the url base are not matching. Some of the functionality might not work.
+      </div>
+
+      <button class="btn btn-success float-end"
+              [disabled]="!settingsForm.form.valid || !changed || inProgress"
+              (click)="save()" i18n>Save
+      </button>
+      <button class="btn btn-secondary float-end"
+              [disabled]=" !changed || inProgress"
+              (click)="reset()" i18n>Reset
+      </button>
+    </div>
+  </div>
+
+
+</form>

@@ -1,0 +1,16 @@
+<app-gallery-search-field-base [(ngModel)]="rawSearchText"
+                               (ngModelChange)="validateRawSearchText()"
+                               (search)="search.emit()"
+                               [placeholder]="placeholder"
+                               name="form-search-field">
+
+</app-gallery-search-field-base>
+<hr>
+<app-gallery-search-query-entry
+  [(ngModel)]="searchQueryDTO"
+  (change)="onQueryChange()"
+  (ngModelChange)="onChange()"
+  name="search-root"
+  (delete)="resetQuery()">
+
+</app-gallery-search-query-entry>

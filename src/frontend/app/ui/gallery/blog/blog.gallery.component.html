@@ -1,0 +1,16 @@
+<div class="blog">
+  <div class="card">
+    <div class="card-body" style="min-height: 77px" [style.height]="collapsed ? '77px':''">
+      <ng-container *ngFor="let md of markdowns; let i = index">
+        <markdown
+          *ngIf="!collapsed"
+          [data]="md">
+        </markdown>
+        <span *ngIf="collapsed" class="text-preview">
+        {{md}}
+      </span>
+        <hr *ngIf="i != markdowns.length-1">
+      </ng-container>
+    </div>
+  </div>
+</div>

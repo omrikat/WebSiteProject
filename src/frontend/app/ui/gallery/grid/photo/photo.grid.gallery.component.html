@@ -1,0 +1,51 @@
+<div #photoContainer class="photo-container" (mouseover)="mouseOver()" (mouseout)="mouseOut()">
+
+
+  <img alt="{{gridMedia.media.name}}" #img [src]="thumbnail.Src"
+       *ngIf="thumbnail.Available">
+
+  <app-gallery-grid-photo-loading
+    [error]="thumbnail.Error"
+    [animate]="thumbnail.loading"
+    *ngIf="!thumbnail.Available">
+  </app-gallery-grid-photo-loading>
+
+
+  <div *ngIf="gridMedia.isVideo()" class="video-indicator">
+    {{gridMedia.Video.metadata.duration  | duration}} <span class="oi oi-video"></span></div>
+
+
+  <!--Info box -->
+  <div class="info"
+       *ngIf="infoBarVisible">
+    <div class="photo-name">{{Title}}</div>
+
+    <div class="photo-position" *ngIf="gridMedia.hasPositionData()">
+      <span class="oi oi-map-marker"></span>
+      <ng-template [ngIf]="getPositionText()">
+        <a [routerLink]="['/search', getPositionSearchQuery()]"
+           *ngIf="searchEnabled">
+          {{getPositionText()}}
+        </a>
+        <span *ngIf="!searchEnabled">{{getPositionText()}}</span>
+      </ng-template>
+    </div>
+
+    <div class="photo-keywords" *ngIf="keywords">
+      <ng-template ngFor let-keyword [ngForOf]="keywords" let-last="last">
+        <a *ngIf="searchEnabled"
+           [routerLink]="['/search', getTextSearchQuery(keyword.value,keyword.type)]" [ngSwitch]="keyword.type">
+          <ng-template [ngSwitchCase]="SearchQueryTypes.keyword">#</ng-template><!--
+       -->
+          <ng-template [ngSwitchCase]="SearchQueryTypes.person"><span class="oi oi-person"></span></ng-template><!--
+       -->{{keyword.value}}</a>
+        <span *ngIf="!searchEnabled" [ngSwitch]="keyword.type">
+          <ng-template [ngSwitchCase]="SearchQueryTypes.keyword">#</ng-template><!--
+       --><ng-template [ngSwitchCase]="SearchQueryTypes.person"><span class="oi oi-person"></span></ng-template><!--
+       -->{{keyword.value}}</span>
+        <ng-template [ngIf]="!last">,&#160;</ng-template>
+      </ng-template>
+
+    </div>
+  </div>
+</div>

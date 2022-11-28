@@ -1,0 +1,64 @@
+<form #settingsForm="ngForm" class="form-horizontal">
+  <div class="card mb-4">
+    <h5 class="card-header">
+      <span class="oi oi-{{icon}}"></span> {{Name}}
+    </h5>
+    <div class="card-body">
+      <div [hidden]="!error" class="alert alert-danger" role="alert"><strong>Error: </strong>{{error}}</div>
+
+      <app-settings-entry
+        name="Preview Filter query"
+        description="Filters the sub-folders with this search query"
+        i18n-description i18n-name
+        [ngModel]="states.SearchQuery"
+        [simplifiedMode]="simplifiedMode"
+        [typeOverride]="'searchQuery'"
+        [required]="true">
+      </app-settings-entry>
+
+      <app-settings-entry
+        name="Preview Sorting"
+        description="If multiple preview is available sorts them by these methods and selects the first one."
+        i18n-description i18n-name
+        [ngModel]="states.Sorting"
+        [simplifiedMode]="simplifiedMode"
+        [required]="true">
+      </app-settings-entry>
+
+      <button class="btn btn-success float-end"
+              [disabled]="!settingsForm.form.valid || !changed || inProgress"
+              (click)="save()" i18n>Save
+      </button>
+      <button class="btn btn-secondary float-end"
+              [disabled]=" !changed || inProgress"
+              (click)="reset()" i18n>Reset
+      </button>
+
+
+      <app-settings-job-button class="mt-2 mt-md-0 float-left"
+                               #previewFillingButton
+                               [soloRun]="true"
+                               (jobError)="error=$event"
+                               [jobName]="jobName"
+                               [allowParallelRun]="false"
+                               [config]="Config"></app-settings-job-button>
+
+
+      <app-settings-job-button class="ms-md-2 mt-2 mt-md-0"
+                               [danger]="true"
+                               [soloRun]="true"
+                               (jobError)="error=$event"
+                               [allowParallelRun]="false"
+                               [disabled]="previewFillingButton.Running"
+                               [jobName]="resetJobName"></app-settings-job-button>
+
+      <ng-container *ngIf="Progress != null">
+        <br/>
+        <hr/>
+        <app-settings-job-progress [progress]="Progress"></app-settings-job-progress>
+      </ng-container>
+
+    </div>
+
+  </div>
+</form>

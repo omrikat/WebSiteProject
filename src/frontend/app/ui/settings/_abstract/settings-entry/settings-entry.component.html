@@ -1,0 +1,126 @@
+<ng-template #popTemplate i18n>
+  It seems that you are running the application in a Docker container.
+  This setting should not be changed in docker.
+  Make sure, that you know what you are doing.
+</ng-template>
+
+<ng-container *ngIf="state">
+  <div class="mb-3 row"
+       [class.changed-settings]="changed"
+       [class.docker-warning]="dockerWarning"
+       [hidden]="shouldHide">
+    <label class="col-md-2 control-label" [for]="idName">{{name}}</label>
+    <div class="col-md-10">
+
+      <div class="input-group">
+
+
+        <app-gallery-search-field
+          *ngIf="Type === 'searchQuery'"
+          [(ngModel)]="state.value"
+          [id]="idName"
+          [name]="idName"
+          [title]="title"
+          [disabled]="state.readonly || disabled"
+          (change)="onChange($event)"
+          placeholder="Search Query">
+
+        </app-gallery-search-field>
+
+        <input
+          *ngIf="!state.isEnumType && !state.isEnumArrayType && Type !== 'boolean' && Type !== 'searchQuery'"
+          [type]="type" [min]="state.min" [max]="state.max" class="form-control"
+          [placeholder]="PlaceHolder"
+          [title]="title"
+          [(ngModel)]="StringValue"
+          (ngModelChange)="onChange($event)"
+          [name]="idName"
+          [disabled]="state.readonly || disabled"
+          [id]="idName"
+          required="required">
+
+        <select
+          *ngIf="state.isEnumType"
+          [id]="idName"
+          [name]="idName"
+          [title]="title"
+          (ngModelChange)="onChange($event)"
+          [disabled]="state.readonly || disabled"
+          class="form-select" [(ngModel)]="state.value">
+          <option *ngFor="let opt of optionsView" [ngValue]="opt.key">{{opt.value}}
+          </option>
+        </select>
+
+
+        <bSwitch
+          *ngIf="Type === 'boolean'"
+          class="switch"
+          [id]="idName"
+          [name]="idName"
+          [title]="title"
+          [disabled]="state.readonly || disabled"
+          switch-on-color="primary"
+          [switch-inverse]="true"
+          switch-off-text="Disabled"
+          switch-on-text="Enabled"
+          i18n-switch-off-text
+          i18n-switch-on-text
+          [switch-handle-width]="100"
+          [switch-label-width]="20"
+          (ngModelChange)="onChange($event)"
+          [(ngModel)]="state.value">
+        </bSwitch>
+
+        <ng-container *ngIf="state.isEnumArrayType">
+          <ng-container *ngFor="let _ of state.value; let i=index">
+            <div class="row col-12 mt-1 m-0 p-0">
+              <div class="col p-0">
+                <select
+                  [id]="'list_'+idName+i"
+                  [name]="'list_'+idName+i"
+                  [title]="title"
+                  (ngModelChange)="onChange($event)"
+                  [disabled]="state.readonly || disabled"
+                  class="form-select" [(ngModel)]="state.value[i]">
+                  <option *ngFor="let opt of optionsView" [ngValue]="opt.key">{{opt.value}}
+                  </option>
+                </select>
+
+
+              </div>
+              <ng-container *ngIf="state.type === 'array'">
+                <div class="col-auto pe-0">
+                  <button class="btn btn-secondary float-end"
+                          [id]="'list_btn_'+idName+i"
+                          [name]="'list_btn_'+idName+i" (click)="remove(i)"><span
+                    class="oi oi-trash"></span>
+                  </button>
+                </div>
+              </ng-container>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="state.type === 'array'">
+            <div class="col-12 p-0">
+              <button class="btn btn-primary mt-1 float-end"
+                      [id]="'btn_add_'+idName"
+                      [name]="'btn_add_'+idName"
+                      (click)="AddNew()">+Add
+              </button>
+            </div>
+          </ng-container>
+        </ng-container>
+        <div class="input-group-append">
+          <span
+            triggers="mouseenter:mouseleave"
+            placement="bottom"
+            [popover]="popTemplate"
+            class="oi oi-warning text-warning warning-icon ms-2" *ngIf="dockerWarning && changed"></span>
+        </div>
+      </div>
+      <small class="form-text text-muted" *ngIf="description">{{description}}
+        <a *ngIf="link" [href]="link">{{linkText || link}}</a>
+      </small>
+      <ng-content></ng-content>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,43 @@
+.container-fluid{
+  background-color: #e9ecef;
+}
+
+.photos-count {
+  display: inline-block;
+  padding-right: 10px;
+}
+
+
+.divider {
+  margin-left: 5px;
+  border-left: 1px solid #6c757d;
+  display: inline-block;
+}
+
+
+.dropdown-menu {
+  min-width: 13rem;
+}
+
+.dropdown-item {
+  padding: 0.25rem 0.5rem;
+}
+
+.row {
+  margin: 0;
+  display: flex;
+  cursor: pointer;
+}
+
+nav {
+  z-index: 1;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+
+.search-type {
+  margin-left: 5px;
+}
