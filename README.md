@@ -19,7 +19,11 @@ The project is related to making our website safe and stable,the website uploade
 If one of the machine update any file, will updated all machine.
 Also we test the website if it works well in lambda function , it check text that should be in the website.
 ```
+## Live Demo:
+Live Demo @ render: https://pigallery2.onrender.com/ 
+ - the demo page **first load** might take up **30s**: the time while the free webservice boots up
 
+![PiGallery2 - Animated gif demo](docs/demo.gif)
 
 
 ### Features
@@ -114,8 +118,3 @@ If you get status with FAILE status you need to check the deployment.yaml file .
 ```
 aws cloudformation deploy --template-file deployment.yaml --stack-name "my-new-stack"
 ```
-
-
-## Contact
-
-[@linkedin](https://www.linkedin.com/in/omri-katesh-1bb491249/) - Omri Katesh
