@@ -8,10 +8,6 @@
 - [Getting Started](#toolbox-getting-started)
   * [Infrastructure](#bangbang-infrastructure)
   * [Deployment](#triangular_flag_on_post-deployment)
-- [Roadmap](#compass-roadmap)
-- [Contributing](#wave-contributing)
-  * [Code of Conduct](#scroll-code-of-conduct)
-- [FAQ](#grey_question-faq)
 - [Contact](#handshake-contact)
 
   
@@ -19,18 +15,10 @@
 <!-- About the Project -->
 ##About the Project
 ```
-The project is related to security once development pushes code to GitHub, 
-the pipeline will check if there’s a vulnerability and give a score if it's high seems good, 
-otherwise will damage the code.
-In other words I want to keep the code clean and hard to hack.
-And once it's pass the **Quality Gate Status Check**,
-there's anothe step **Dockerize The Application** and push it to DockerHub as image.
-The last step is run the image into **K8S Cluster**.
+The project is related to making our website safe and stable,the website uploaded to three machines that connected to share files service in AWS .
+If one of the machine update any file, will updated all machine.
+Also we test the website if it works well in lambda function , it check text that should be in the website.
 ```
-
-<!-- Screenshots -->
-### AWS-Diagram
-![image](https://github.com/omrikat/WebSiteProject/blob/main/Aws-diagram.jpg)
 
 <details>
 <summary>DevOps</summary>
@@ -41,34 +29,70 @@ The last step is run the image into **K8S Cluster**.
   </ul>
 </details>
 
-<!-- Features -->
-### :dart: Features
 
-- Used **Ansible Playbook**
-- Used **Docker**
-- Used **Kubernetes**
+**How to Deploy CloudFormation Template using AWS CLI:**
+```
+aws cloudformation deploy --template-file deployment.yaml --stack-name "my-new-stack"
+```
+
+
+
+<!-- Features -->
+###Features
+
+- Used **AWS**
+- Used **HTML**
+- Used **TypeScript**
 
 <!-- Env Variables -->
-### :key: Environment Variables
+###Environment Variables
 
-To run this project, you will need to add the following environment variables to your environment.
+To run this project, you will should to add the following environment variables to your environment.
 
-`Terraform`
 `AWS`
+`Chrome`
 `Access Key`
 
 <!-- Getting Started -->
-##     :toolbox: Getting Started
-#### 🐾 What I Use
+## Getting Started
 
-### :bangbang: Infrastructure
+##Infrastructure
+### 1.Install and Run with Docker (recommended)
+Docker with docker-compose is the official and recommend way of installing and running Pigallery2. It contains all necessary dependencies, auto restarts on reboot, supports https, easy to upgrade to newer versions. For configuration and docker-compose files read more here or check all builds: https://hub.docker.com/r/bpatrik/pigallery2/tags/
+###2.Direct Install 
+if you are familiar with Node.js and building npm packages from source)
+As an alternative, you can also directly install Node.js and the app and run it natively.
 
-Terraform describe our complete infrastructure in the form of code.
+###2.1.1 Install Node.js
+####Download and extract
+```
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
-🎨 **Resources:**
+```
+###2.2.2 Install PiGallery2
+Note: A build requires a machine with around 2GB or memory.
+```
+cd ~
+wget https://github.com/bpatrik/pigallery2/archive/master.zip
+unzip master.zip
+cd pigallery2-master # enter the unzipped directory
+npm install
+npm run build
+```
+Note: It is recommended to create a release version with npm run create-release on a more powerful machine and deploy that to you server.
 
+Note: you can use npm run create-release -- --languages=fr,ro to restrict building to the listed languages (English is added by default)
+
+###Run PiGallery2
+```
+npm start
+```
+##AWS Service
+ **Resources:**
 `aws_instance`
 `aws_vpc`
+`lambda_function.lambda_handler`
 `aws_security_group`
 `aws_internet_gateway`
 `aws_subnet`
@@ -76,30 +100,23 @@ Terraform describe our complete infrastructure in the form of code.
 `Access Key`
 `aws_route_table_association`
 `aws_lb`
-`tls_private_key`
-`local_file`
-`aws_key_pair`
-`EFS - Volume`
+`EFS`
+`aws_lb`
 
-**All you need to create these infrastructure:**
-```
-terraform init
-terraform plan
-terraform apply
-```
+**AWS Diagram:**
+<!-- Screenshots -->
+####You can see here the AWS diagram that used in this project.
+![image](https://github.com/omrikat/WebSiteProject/blob/main/Aws-diagram.jpg)
 
-### 🔱 **This project uses JSP Page:**
+###How to Create Cloudformation in AWS Step-By-Step:
+1).First you should visit AWS WebSite ==> https://aws.amazon.com/console/
+2).login into you'r AWS account, and then go to CloudFormation.
 
-```
-Is a text document that contains two types of text: static data, which can be expressed in any text-based format (such as HTML, SVG, WML, and XML), and JSP elements, which construct dynamic content.
-Created a simple page that contain some information about DevOps tools.
-This ****WebApp** run inside image that I've **Dockerize** it and push it to **DockerHub**.
-After that I pull it inside the K8S in this case I used Minikube.
-```
+
+###**This project uses TS Page:**
 
 ```
-Start your browser if it is not already running. In the address area of the browser,
-type http://localhost:8080/DateJSP.jsp and submit that address to the browser.
+
 ```
 
 <!-- Installation -->
@@ -117,14 +134,6 @@ You can find inside:**
 git clone https://github.com/shadibdair/securcodes/blob/main/poc/sonarqube-script.sh
 ```
 
-⭐️ **NOTE**
-
-```
-I've stored all the configuration inside EFS AWS ... That saved your time in the next terraform apply.
-all the configuration will be saved.
-- One for jenkins server EC2
-- One for sonarqube server EC2
-```
 
 <!-- Deployment -->
 ### :triangular_flag_on_post: Deployment
@@ -156,95 +165,10 @@ After that pullin the image from dockerhub and added to deployment yaml
 that I've created to use it inside the K8S in this case I used Minikube.
 ```
 
-<!-- Roadmap -->
-## :compass: Roadmap
-
-🦅 **The Pipeline Workflow**
-
-![image](https://user-images.githubusercontent.com/43513994/205519448-a0337446-6b19-4ca7-b2a5-b508c818840b.png)
 
 
-<!-- Contributing -->
-## :wave: Contributing
-
-<a href="https://github.com/shadibdair">
-  <img src="https://contrib.rocks/image?repo=Louis3797/awesome-readme-template" />
-</a>
-
-
-🗣 Shadi Badir: Contributions are always welcome!
-
-
-<!-- Code of Conduct -->
-### :scroll: Code of Conduct
-
-```
-A well-written code of conduct clarifies an organization's mission, values and principles,
-linking them with standards of professional conduct.
-The code articulates the values the organization wishes to foster in leaders and employees and,
-in doing so, defines desired behavior.
-```
-
-<!-- FAQ -->
-## :grey_question: FAQ
-
-- 🧛 Question 1 : How many ec2's were used ?
-
-  + Answer 1 : 
-  + I've used 3 instances
-  ```
-  1- EC2 For Jenkins Server
-     - I've prepared a script that install, configure and stored the plugins from EFS volume.
-  2- EC2 For SonarQube Server
-     - I've prepared a script that install, configure and stored the plugins from EFS volume.
-  3- EC2 For Cluster K8S - Minikube
-     - Installed manualy the minikube cluster
-  ```
-
-- 🧑🏼‍💻 Question 2 : What is your next step / features ?
-
-  + Answer 2
-  ```
-  Will creating new stages/steps that scan the code more deply :
-  Static application security testing (SAST) and 
-  dynamic application security testing (DAST) 
-  are both methods of testing for security vulnerabilities,
-  ```
-  
-- 🐉 Question 3 : What you've learned from this project ?
-
-  + Answer 3
-  ```
-  The most important thing, I faced new errors and solved it.
-  Stack-overflow was my best friend 💚.
-  And I've learned ansible playbook and how to use it with jenkins.
-  I tried to use many tools as: 
-  Jenkinsfile, Dockerfile, Docker-Compose, Ansible, K8S, AWS Services, Terraform.
-  ```
-
-- ⛄️ Question 4 : What's your advice ?
-
-  + Answer 4
-  ```
-  Don’t trust user input: 😈
-  A significant amount of vulnerabilities in web applications including
-  cross site scripting, SQL injections and buffer overflows can be attributed to
-  the fact that the software trusted user input. Every field on an input
-  form should have at least one check to validate that the data is in the correct
-  format. For example, an address should be checked to make sure 
-  it doesn’t include a colon or backslash. 
-  
-  ```
 
 <!-- Contact -->
-## :handshake: Contact
+##Contact
 
-👤 Your Name - [@linkedin](https://www.linkedin.com/in/shadi-badir/) - Shadi Badir
-
-🥷🏻 Project Link: 
-
-**Web Application - where I build the jenkinsfile pipeline, dockerfil, ansible.**
-- [https://github.com/shadibdair/web-app-sq](https://github.com/shadibdair/web-app-sq)
-
-**Infrastructure as code - where I build the aws services.**
-- [https://github.com/shadibdair/securcodes](https://github.com/shadibdair/securcodes)
+[@linkedin](https://www.linkedin.com/in/omri-katesh-1bb491249/) - Omri Katesh
