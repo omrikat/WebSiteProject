@@ -1,4 +1,4 @@
-<!-- Table of Contents -->
+
 #Table of Contents
 
 - [About the Project](#star2-about-the-project)
@@ -12,7 +12,7 @@
 
   
 
-<!-- About the Project -->
+
 ##About the Project
 ```
 The project is related to making our website safe and stable,the website uploaded to three machines that connected to share files service in AWS .
@@ -21,14 +21,14 @@ Also we test the website if it works well in lambda function , it check text tha
 ```
 
 
-<!-- Features -->
+
 ###Features
 
 - Used **AWS**
 - Used **HTML**
 - Used **TypeScript**
 
-<!-- Env Variables -->
+
 ###Environment Variables
 
 To run this project, you will should to add the following environment variables to your environment.
@@ -37,13 +37,14 @@ To run this project, you will should to add the following environment variables 
 `Chrome`
 `Access Key`
 
-<!-- Getting Started -->
-## Getting Started
+
+# Getting Started
 
 ##Infrastructure
-<!-- Installation -->
+
 ### 1.Install and Run with Docker (recommended)
 Docker with docker-compose is the official and recommend way of installing and running Pigallery2. It contains all necessary dependencies, auto restarts on reboot, supports https, easy to upgrade to newer versions. For configuration and docker-compose files read more here or check all builds: https://hub.docker.com/r/bpatrik/pigallery2/tags/
+
 ###2.Direct Install 
 if you are familiar with Node.js and building npm packages from source)
 As an alternative, you can also directly install Node.js and the app and run it natively.
@@ -89,7 +90,7 @@ npm start
 `aws_lb`
 
 **AWS Diagram:**
-<!-- Screenshots -->
+
 ####You can see here the AWS diagram that used in this project.
 ![image](https://github.com/omrikat/WebSiteProject/blob/main/Aws-diagram.jpg)
 
@@ -114,7 +115,7 @@ If you get status with FAILE status you need to check the deployment.yaml file .
 aws cloudformation deploy --template-file deployment.yaml --stack-name "my-new-stack"
 ```
 
-<!-- Contact -->
+
 ##Contact
 
 [@linkedin](https://www.linkedin.com/in/omri-katesh-1bb491249/) - Omri Katesh
