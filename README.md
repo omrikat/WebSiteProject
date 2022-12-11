@@ -20,22 +20,6 @@ If one of the machine update any file, will updated all machine.
 Also we test the website if it works well in lambda function , it check text that should be in the website.
 ```
 
-<details>
-<summary>DevOps</summary>
-  <ul>
-    <li><a href="https://www.docker.com/">Docker</a></li>
-    <li><a href="https://www.jenkins.io/">Jenkins</a></li>
-    <li><a href="https://circleci.com/">CircleCLI</a></li>
-  </ul>
-</details>
-
-
-**How to Deploy CloudFormation Template using AWS CLI:**
-```
-aws cloudformation deploy --template-file deployment.yaml --stack-name "my-new-stack"
-```
-
-
 
 <!-- Features -->
 ###Features
@@ -57,6 +41,7 @@ To run this project, you will should to add the following environment variables 
 ## Getting Started
 
 ##Infrastructure
+<!-- Installation -->
 ### 1.Install and Run with Docker (recommended)
 Docker with docker-compose is the official and recommend way of installing and running Pigallery2. It contains all necessary dependencies, auto restarts on reboot, supports https, easy to upgrade to newer versions. For configuration and docker-compose files read more here or check all builds: https://hub.docker.com/r/bpatrik/pigallery2/tags/
 ###2.Direct Install 
@@ -111,62 +96,23 @@ npm start
 ###How to Create Cloudformation in AWS Step-By-Step:
 1).First you should visit AWS WebSite ==> https://aws.amazon.com/console/
 2).login into you'r AWS account, and then go to CloudFormation.
-3.
+3).
+![image](https://github.com/omrikat/WebSiteProject/blob/main/Aws1.png)
+4).
+![image](https://github.com/omrikat/WebSiteProject/blob/main/Aws2.png)
+5).
+![image](https://github.com/omrikat/WebSiteProject/blob/main/Aws3.png)
+6).
+![image](https://github.com/omrikat/WebSiteProject/blob/main/Aws4.png)
 
-###**This project uses TS Page:**
+###NOTE:
+Wait for all status to be CREATE_COMPLETE 
+If you get status with FAILE status you need to check the deployment.yaml file .
 
+**How to Deploy CloudFormation Template using AWS CLI:**
 ```
-
+aws cloudformation deploy --template-file deployment.yaml --stack-name "my-new-stack"
 ```
-
-<!-- Installation -->
-### :gear: Configuration
-
-☘️ **Prepared a script that install all the plugins that needs **Instance Jenkins Server**
-You can find inside:**
-```
-git clone https://github.com/shadibdair/securcodes/blob/main/poc/jenkins-script.sh
-```
-
-🌿 **Prepared a script that install all the plugins that needs **Instance SonarQube Server**
-You can find inside:**
-```
-git clone https://github.com/shadibdair/securcodes/blob/main/poc/sonarqube-script.sh
-```
-
-
-<!-- Deployment -->
-### :triangular_flag_on_post: Deployment
-
-```
-🍄 This project start deploy once you add new feature inside the code of web-app.
-The trigger will notify the job in jenkins, and start scanning the entire project to find vulnerabilities.
-Inside the sonarqube I've configure some condition how to scan the code.
-```
-
-![image](https://user-images.githubusercontent.com/43513994/205518648-12c75d1d-bb18-4cfd-87b5-9ea0f29aee65.png)
-
-```
-If Quality Gate Status Check returned OK ... 
-Continue to the next stage/step in according to jenkinsfile pipeline.
-```
-
-```
-🐻‍❄️ The next stage/step dockerize the application and push it to dockerhub.
-```
-
-![image](https://user-images.githubusercontent.com/43513994/205518829-71f9c800-113e-43a6-a98e-8cb39da70435.png)
-
-```
-🐣 The last stage/step I've deploy the application into cluster k8s using minikube as cluster.
-In this case I used Ansible Playbook, 
-that access to ec2 cluster and create a deployment and nodeport service for external access.
-After that pullin the image from dockerhub and added to deployment yaml 
-that I've created to use it inside the K8S in this case I used Minikube.
-```
-
-
-
 
 <!-- Contact -->
 ##Contact
