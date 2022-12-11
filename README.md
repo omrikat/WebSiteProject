@@ -28,7 +28,7 @@ Live Demo @ render: https://pigallery2.onrender.com/
 
 ### Features
 
-- Used **AWS**
+- Used **Docker**
 - Used **HTML**
 - Used **TypeScript**
 
