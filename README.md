@@ -1,240 +1,250 @@
-# PiGallery2 
-![GitHub package.json version](https://img.shields.io/github/package-json/v/bpatrik/pigallery2)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/bpatrik/pigallery2.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/bpatrik/pigallery2/context:javascript)
-[![Build Status](https://travis-ci.org/bpatrik/pigallery2.svg?branch=master)](https://travis-ci.org/bpatrik/pigallery2)
-[![Coverage Status](https://coveralls.io/repos/github/bpatrik/pigallery2/badge.svg?branch=master)](https://coveralls.io/github/bpatrik/pigallery2?branch=master)
-[![Heroku](https://heroku-badge.herokuapp.com/?app=pigallery2&style=flat)](https://pigallery2.herokuapp.com)
-[![Docker build](https://github.com/bpatrik/pigallery2/workflows/docker-buildx/badge.svg)](https://github.com/bpatrik/pigallery2/actions)
-[![dependencies Status](https://david-dm.org/bpatrik/pigallery2/status.svg)](https://david-dm.org/bpatrik/pigallery2)
- 
+<!-- Table of Contents -->
+# :notebook_with_decorative_cover: Table of Contents
 
-Homepage: http://bpatrik.github.io/pigallery2/
+- [About the Project](#star2-about-the-project)
+  * [Screenshots](#camera-screenshots)
+  * [Features](#dart-features)
+  * [Environment Variables](#key-environment-variables)
+- [Getting Started](#toolbox-getting-started)
+  * [Infrastructure](#bangbang-infrastructure)
+  * [Deployment](#triangular_flag_on_post-deployment)
+- [Roadmap](#compass-roadmap)
+- [Contributing](#wave-contributing)
+  * [Code of Conduct](#scroll-code-of-conduct)
+- [FAQ](#grey_question-faq)
+- [Contact](#handshake-contact)
 
-This is a **fast** (like faster than your PC fast) **directory-first photo gallery website**, optimised for running on low resource servers (especially on raspberry pi).
-
-✔️ Strenghts:
- * ⚡ Fast, like for real
- * ✔️ Simple. Point to your photos folder and a temp folder and you are good to go
-
-⛔ Weakness:
- * 😥 Its simple. Shows what you have that's it. No gallery changes (photo delete, rotate, enhance, tag, organize, etc), your gallery folder is read-only.
- * 📁 Optimized for galleries with <100K photos with <5k photos/folder
-
-## Live Demo
-Live Demo @ heroku: https://pigallery2.herokuapp.com/ 
- - the demo page **first load** might take up **30s**: the time while the free webservice boots up
-
-![PiGallery2 - Animated gif demo](docs/demo.gif)
-
-## Table of contents
-1. [Getting started](#1-getting-started-also-works-on-raspberry-pi)
-2. [Translate the page to your own language](#2-translate-the-page-to-your-own-language)
-3. [Feature list](#3-feature-list)
-4. [Suggest/endorse new features](#4-suggestendorse-new-features)
-5. [Known errors](#5-known-errors)
-6. [Credits](#6-credits) 
-
-
-
-## 1. Getting started (also works on Raspberry Pi)
-
-### 1.1 [Install and Run with Docker (recommended)](docker/README.md)
-
-[Docker](https://www.docker.com/) with [docker-compose](https://docs.docker.com/compose/) is the official and recommend way of installing and running *Pigallery2*.
-It contains all necessary dependencies, auto restarts on reboot, supports https, easy to upgrade to newer versions.
-For configuration and docker-compose files read more [here](docker/README.md) or check all builds: https://hub.docker.com/r/bpatrik/pigallery2/tags/
-
-
-
-### 1.2 Direct Install (if you are familiar with Node.js and building npm packages from source)
-As an alternative, you can also directly [install Node.js](https://www.scaler.com/topics/javascript/install-node-js/) and the app and run it natively. 
-### 1.2.0 [Install Node.js](https://nodejs.org/en/download/)
-Download and extract
-```bash
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-Full node install on raspberry pi description: https://www.w3schools.com/nodejs/nodejs_raspberrypi.asp
- 
-### 1.2.1 Install PiGallery2
-#### 1.2.1-a Install from release
-
-```bash
-cd ~
-wget https://github.com/bpatrik/pigallery2/releases/download/1.9.0/pigallery2-release.zip
-unzip pigallery2-release.zip -d pigallery2
-cd pigallery2
-npm install
-```
-#### 1.2.1-b Install from source
-
-**Note:** A build requires a machine with around 2GB or memory.
-
-
-```bash
-cd ~
-wget https://github.com/bpatrik/pigallery2/archive/master.zip
-unzip master.zip
-cd pigallery2-master # enter the unzipped directory
-npm install
-npm run build
-```
-
-**Note**: It is recommended to create a release version with `npm run create-release` on a more powerful machine and deploy that to you server.
-
-**Note**: you can use `npm run create-release -- --languages=fr,ro` to restrict building to the listed languages (English is added by default)
-
-#### 1.2.2 Run PiGallery2
-```bash
-npm start
-```
-To configure it, run `PiGallery2` first to create `config.json` file, then edit it and restart.
-The app has a nice UI for settings, you may use that too. 
-
-Default user: `admin` pass: `admin`. (It is not possible to change the admin password, you need to create another user and delete the default `admin` user, see  #220)
-
-**Note**: First run, you might have file access issues and port 80 issue, see [#115](https://github.com/bpatrik/pigallery2/issues/115).
-Running `npm start -- --Server-port=8080` will start the app on port 8080 that does not require `root`
-Adding read/write permissions to all files can solve the file access issue `chmod -R o-w .`, see [#98](https://github.com/bpatrik/pigallery2/issues/98).
-
-##### 1.2.2.1 Run on startup
-You can run the app up as a service to run it on startup. Read more at [#42](https://github.com/bpatrik/pigallery2/issues/42#issuecomment-458340945)
-
-### 1.3 Advanced configuration
-You can set up the app the following ways:
- * Using the UI
- * Manually editing the `config.json`
- * Through switches
-   * Like: `node start -- --Server-port=3000 --Client-authenticationRequired=false`
-   * You can check the generated `config.json` for the config hierarchy
- * Through environmental variable
-   * like set env. variable `Server-port` to `3000`   
-
-Full list of configuration options are available at the [MANPAGE.md](MANPAGE.md).
-
-### 1.4 Useful links/tips:
-
-#### using nginx
-It is recommended to use a reverse proxy like nginx before node
-https://stackoverflow.com/questions/5009324/node-js-nginx-what-now
-
-#### making https
-With cerbot & nginx it is simple to set up secure connection. You have no excuse not doing so.
-https://certbot.eff.org/
-
-#### node install error:
-If you get error during module installation, make sure you have everything to build node modules from source
-```bash
-apt-get install build-essential  libkrb5-dev gcc g++
-```
-
-
-## 2. Translate the page to your own language
-1. [Install Pigallery2](#121-b-install-from-source) from source (with the release it won't work) 
-2. add your language e.g: fr
-   * copy `src/frontend/translate/messages.en.xls` to `src/frontend/translate/messages.fr.xls`
-   * add the new translation to the `angular.json` `projects->pigallery2->i18n->locales` section 
-3. translate the file by updating the `<target>` tags
-4. test if it works:
-   build and start the app
-   ```bash
-   npm install
-   npm run build
-   npm start
-   ```
-5. (optional) create a pull request at github to add your translation to the project.
-
-**Note**: you can also build your own release with as described in [1.1.1-b Install from source](#121-b-install-from-source);
-
-
-
-## 3. Feature list
-
- * supported formats [full list here](https://github.com/bpatrik/pigallery2/blob/master/src/common/SupportedFormats.ts):
-   * images: **jpg, jpeg, jpe, webp, png, gif, svg**
-   * videos: **mp4, ogg, ogv, webm**
-     * with (built-in) transcoding: avi, mkv, mov, wmv, flv, mts, m2ts, mpg, 3gp, m4v, mpeg, vob, divx, xvid, ts
- * **Rendering directories as it is**
-   * Listing subdirectories recursively
-   * Listing photos in a nice grid layout
-     * showing **tag/keywords, locations, GPS coordinates** for photos
-     * rendering photos on demand (on scroll)
- * **On the fly thumbnail generation** in several sizes
-   * prioritizes thumbnail generation (generating thumbnail first for the visible photos)
-   * saving generated thumbnails to TEMP folder for reuse
-   * supporting multi-core CPUs
-   * supporting hardware acceleration ([sharp](https://github.com/lovell/sharp))
- * Custom lightbox for full screen photo and video viewing
-   * keyboard support for navigation  
-   * showing low-res thumbnail while full image loads
-   * Information panel for showing **Exif info**  
-   * Automatic playing
-   * gesture support (swipe left, right, up)
-   * shortcut support
- * On the fly photo downscaling for faster load [#50](https://github.com/bpatrik/pigallery2/issues/50)
-   * on zoom, the original photo loads
- * Client side caching (directories and search results)
- * Rendering **photos** with GPS coordinates **on open street maps**
-   * .gpx file support: rendering paths to map
-   * supports [OSM](https://www.openstreetmap.org) and [Mapbox](https://www.mapbox.com) by default, but you can add any provider that has a tile url
- * **Two modes: SQL database and no-database mode**
-   * both modes supports
-     * user management
-     * password protection can be disabled/enabled
-   * database mode supports:
-     * faster directory listing
-     * searching
-       * instant search, auto complete
-     * sharing 
-       * setting link expiration time
- * Faces (persons) support
-    * reads Adobe's XMP Face region metadata. (It is defined by the Metadata Working Group (MWG).)
-    * shows face bounding box over images
- * internalization / translation support
-   * currently supported languages: eng, hun, ro, ru, fr
- * Nice design 
-    * responsive design (phone, tablet desktop support)
- * Setup page
- * Random photo url
-   * You can generate an url that returns a random photo from your gallery. You can use this feature to develop 3rd party applications, like: changing desktop background
- * duplicate photo detection  
- * video support
-   * fully supports `*.mp4` files and partially (might have errors with safari and IE) supports `*.ogg`, `*.ogv`, `*.webm` files
-   * uses ffmpeg and ffprobe to generate video thumbnails
-   * can transcode videos to mp4 for better support
- * job scheduling support, with the following supported task: [#92](https://github.com/bpatrik/pigallery2/issues/92)
-   * converting/transcoding videos [#66](https://github.com/bpatrik/pigallery2/issues/66) [#71](https://github.com/bpatrik/pigallery2/issues/71)
-   * generating thumbnails
-   * generating converted photos
-   * cleaning up temp folder
-   * indexing db
- * folder ignoring [#87](https://github.com/bpatrik/pigallery2/issues/87)
- * `.pg2conf` UI modifying files. [#177](https://github.com/bpatrik/pigallery2/issues/177).
-    * List of these files are passed down to the UI modify its behaviour.
-    * Currently, supported custom, per folder sorting.
- * Dockerized 
- * **Markdown based blogging support** 
-   * you can write some note in the *.md files for every directory
- * bug free :) - `In progress`
- 
- 
-## 4. Suggest/endorse new features
-  You are welcome to suggest new features to the application via [github issues](https://github.com/bpatrik/pigallery2/issues).  
-  Unfortunatly, lately I only have a limited time for this hobby project of mine. 
-  So, I mostly focuse on those features that are align with my needs. Sorry :(.
-  Although, I try to fixs bugs ASAP (that can still take from a few days to months).
-  I also try to implement some of the feature requests that have a lots of 'likes' (i.e.: `+1`-s or thumbs ups) on it.
-  If you have a feature that you really would like to happen, I welcome contributions to the app. See [CONTRIBUTING.md](https://github.com/bpatrik/pigallery2/blob/master/CONTRIBUTING.md) for more details.
-
-## 5. Known errors
-* IOS map issue
-  * Map on IOS prevents using the buttons in the image preview navigation, see #155
-* Video support on weak servers (like raspberry pi) with low upload rate
-  * video playback may use up too much resources and the server might not response for a while. Enable video transcoding in the app, to transcode the videos to lover bitrate. 
   
-## 6. Credits
-Crossbrowser testing sponsored by [Browser Stack](https://www.browserstack.com)
-[<img src="https://camo.githubusercontent.com/a7b268f2785656ab3ca7b1cbb1633ee5affceb8f/68747470733a2f2f64677a6f7139623561736a67312e636c6f756466726f6e742e6e65742f70726f64756374696f6e2f696d616765732f6c61796f75742f6c6f676f2d6865616465722e706e67" alt="Browser Stack" height="31px" style="background: cornflowerblue;">](https://www.browserstack.com)
 
-++++++++++++++++++++
+<!-- About the Project -->
+##About the Project
+```
+The project is related to security once development pushes code to GitHub, 
+the pipeline will check if there’s a vulnerability and give a score if it's high seems good, 
+otherwise will damage the code.
+In other words I want to keep the code clean and hard to hack.
+And once it's pass the **Quality Gate Status Check**,
+there's anothe step **Dockerize The Application** and push it to DockerHub as image.
+The last step is run the image into **K8S Cluster**.
+```
+
+<!-- Screenshots -->
+### :camera: Screenshots
+![image]()
+
+<details>
+<summary>DevOps</summary>
+  <ul>
+    <li><a href="https://www.docker.com/">Docker</a></li>
+    <li><a href="https://www.jenkins.io/">Jenkins</a></li>
+    <li><a href="https://circleci.com/">CircleCLI</a></li>
+  </ul>
+</details>
+
+<!-- Features -->
+### :dart: Features
+
+- Used **Ansible Playbook**
+- Used **Docker**
+- Used **Kubernetes**
+
+<!-- Env Variables -->
+### :key: Environment Variables
+
+To run this project, you will need to add the following environment variables to your environment.
+
+`Terraform`
+`AWS`
+`Access Key`
+
+<!-- Getting Started -->
+##     :toolbox: Getting Started
+#### 🐾 What I Use
+
+### :bangbang: Infrastructure
+
+Terraform describe our complete infrastructure in the form of code.
+
+🎨 **Resources:**
+
+`aws_instance`
+`aws_vpc`
+`aws_security_group`
+`aws_internet_gateway`
+`aws_subnet`
+`aws_route_table`
+`Access Key`
+`aws_route_table_association`
+`aws_lb`
+`tls_private_key`
+`local_file`
+`aws_key_pair`
+`EFS - Volume`
+
+**All you need to create these infrastructure:**
+```
+terraform init
+terraform plan
+terraform apply
+```
+
+### 🔱 **This project uses JSP Page:**
+
+```
+Is a text document that contains two types of text: static data, which can be expressed in any text-based format (such as HTML, SVG, WML, and XML), and JSP elements, which construct dynamic content.
+Created a simple page that contain some information about DevOps tools.
+This ****WebApp** run inside image that I've **Dockerize** it and push it to **DockerHub**.
+After that I pull it inside the K8S in this case I used Minikube.
+```
+
+```
+Start your browser if it is not already running. In the address area of the browser,
+type http://localhost:8080/DateJSP.jsp and submit that address to the browser.
+```
+
+<!-- Installation -->
+### :gear: Configuration
+
+☘️ **Prepared a script that install all the plugins that needs **Instance Jenkins Server**
+You can find inside:**
+```
+git clone https://github.com/shadibdair/securcodes/blob/main/poc/jenkins-script.sh
+```
+
+🌿 **Prepared a script that install all the plugins that needs **Instance SonarQube Server**
+You can find inside:**
+```
+git clone https://github.com/shadibdair/securcodes/blob/main/poc/sonarqube-script.sh
+```
+
+⭐️ **NOTE**
+
+```
+I've stored all the configuration inside EFS AWS ... That saved your time in the next terraform apply.
+all the configuration will be saved.
+- One for jenkins server EC2
+- One for sonarqube server EC2
+```
+
+<!-- Deployment -->
+### :triangular_flag_on_post: Deployment
+
+```
+🍄 This project start deploy once you add new feature inside the code of web-app.
+The trigger will notify the job in jenkins, and start scanning the entire project to find vulnerabilities.
+Inside the sonarqube I've configure some condition how to scan the code.
+```
+
+![image](https://user-images.githubusercontent.com/43513994/205518648-12c75d1d-bb18-4cfd-87b5-9ea0f29aee65.png)
+
+```
+If Quality Gate Status Check returned OK ... 
+Continue to the next stage/step in according to jenkinsfile pipeline.
+```
+
+```
+🐻‍❄️ The next stage/step dockerize the application and push it to dockerhub.
+```
+
+![image](https://user-images.githubusercontent.com/43513994/205518829-71f9c800-113e-43a6-a98e-8cb39da70435.png)
+
+```
+🐣 The last stage/step I've deploy the application into cluster k8s using minikube as cluster.
+In this case I used Ansible Playbook, 
+that access to ec2 cluster and create a deployment and nodeport service for external access.
+After that pullin the image from dockerhub and added to deployment yaml 
+that I've created to use it inside the K8S in this case I used Minikube.
+```
+
+<!-- Roadmap -->
+## :compass: Roadmap
+
+🦅 **The Pipeline Workflow**
+
+![image](https://user-images.githubusercontent.com/43513994/205519448-a0337446-6b19-4ca7-b2a5-b508c818840b.png)
+
+
+<!-- Contributing -->
+## :wave: Contributing
+
+<a href="https://github.com/shadibdair">
+  <img src="https://contrib.rocks/image?repo=Louis3797/awesome-readme-template" />
+</a>
+
+
+🗣 Shadi Badir: Contributions are always welcome!
+
+
+<!-- Code of Conduct -->
+### :scroll: Code of Conduct
+
+```
+A well-written code of conduct clarifies an organization's mission, values and principles,
+linking them with standards of professional conduct.
+The code articulates the values the organization wishes to foster in leaders and employees and,
+in doing so, defines desired behavior.
+```
+
+<!-- FAQ -->
+## :grey_question: FAQ
+
+- 🧛 Question 1 : How many ec2's were used ?
+
+  + Answer 1 : 
+  + I've used 3 instances
+  ```
+  1- EC2 For Jenkins Server
+     - I've prepared a script that install, configure and stored the plugins from EFS volume.
+  2- EC2 For SonarQube Server
+     - I've prepared a script that install, configure and stored the plugins from EFS volume.
+  3- EC2 For Cluster K8S - Minikube
+     - Installed manualy the minikube cluster
+  ```
+
+- 🧑🏼‍💻 Question 2 : What is your next step / features ?
+
+  + Answer 2
+  ```
+  Will creating new stages/steps that scan the code more deply :
+  Static application security testing (SAST) and 
+  dynamic application security testing (DAST) 
+  are both methods of testing for security vulnerabilities,
+  ```
+  
+- 🐉 Question 3 : What you've learned from this project ?
+
+  + Answer 3
+  ```
+  The most important thing, I faced new errors and solved it.
+  Stack-overflow was my best friend 💚.
+  And I've learned ansible playbook and how to use it with jenkins.
+  I tried to use many tools as: 
+  Jenkinsfile, Dockerfile, Docker-Compose, Ansible, K8S, AWS Services, Terraform.
+  ```
+
+- ⛄️ Question 4 : What's your advice ?
+
+  + Answer 4
+  ```
+  Don’t trust user input: 😈
+  A significant amount of vulnerabilities in web applications including
+  cross site scripting, SQL injections and buffer overflows can be attributed to
+  the fact that the software trusted user input. Every field on an input
+  form should have at least one check to validate that the data is in the correct
+  format. For example, an address should be checked to make sure 
+  it doesn’t include a colon or backslash. 
+  
+  ```
+
+<!-- Contact -->
+## :handshake: Contact
+
+👤 Your Name - [@linkedin](https://www.linkedin.com/in/shadi-badir/) - Shadi Badir
+
+🥷🏻 Project Link: 
+
+**Web Application - where I build the jenkinsfile pipeline, dockerfil, ansible.**
+- [https://github.com/shadibdair/web-app-sq](https://github.com/shadibdair/web-app-sq)
+
+**Infrastructure as code - where I build the aws services.**
+- [https://github.com/shadibdair/securcodes](https://github.com/shadibdair/securcodes)
