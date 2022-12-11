@@ -29,7 +29,7 @@ The last step is run the image into **K8S Cluster**.
 ```
 
 <!-- Screenshots -->
-### :camera: Screenshots
+### AWS-Diagram
 ![image](https://github.com/omrikat/WebSiteProject/blob/main/Aws-diagram.jpg)
 
 <details>
