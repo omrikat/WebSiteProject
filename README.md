@@ -1,5 +1,5 @@
 <!-- Table of Contents -->
-# :notebook_with_decorative_cover: Table of Contents
+#Table of Contents
 
 - [About the Project](#star2-about-the-project)
   * [Screenshots](#camera-screenshots)
